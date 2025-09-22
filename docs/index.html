@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Алены</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Cormorant+Garamond:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #ff7bac;
+            --secondary: #c8a4d4;
+            --accent: #92c9ff;
+            --light: #fff9fb;
+            --dark: #5a3d5c;
+            --text: #4a3a4c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffe8f2 0%, #f9f0ff 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Начальный экран */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff9bcb, #c8a4d4, #92c9ff);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease-out;
+        }
+        
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .splash-title {
+            font-family: 'Bad Script', cursive;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards 0.5s;
+        }
+        
+        .splash-subtitle {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards 1s;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .start-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards 1.5s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            font-family: 'Bad Script', cursive;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+        
+        /* Главная страница */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s;
+            display: none;
+        }
+        
+        .main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+        
+        .main-title {
+            font-family: 'Bad Script', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-subtitle {
+            font-size: 1.4rem;
+            color: #9f82a4;
+            margin-bottom: 50px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Навигация */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .nav-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            position: relative;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 182, 193, 0.1), rgba(200, 170, 255, 0.2));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            transition: all 0.4s;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2) rotate(5deg);
+            color: #ff5c9b;
+        }
+        
+        .nav-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-family: 'Bad Script', cursive;
+        }
+        
+        .nav-desc {
+            font-size: 1.1rem;
+            color: #9f82a4;
+            padding: 0 25px;
+            line-height: 1.6;
+        }
+        
+        /* Новые блоки на главной */
+        .features-section {
+            margin: 80px 0;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-family: 'Bad Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 50px;
+            color: var(--dark);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-family: 'Bad Script', cursive;
+        }
+        
+        .countdown-container {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin: 60px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .countdown-title {
+            font-family: 'Bad Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .countdown-unit {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 100px;
+        }
+        
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .countdown-label {
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        
+        /* Блок с бенгальскими котиками */
+        .bengals-section {
+            margin: 80px 0;
+            text-align: center;
+        }
+        
+        .bengals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .bengal-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .bengal-card:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .bengal-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .bengal-caption {
+            padding: 20px;
+            font-family: 'Bad Script', cursive;
+            font-size: 1.4rem;
+            color: var(--dark);
+        }
+        
+        /* Викторина */
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 60px 0;
+            text-align: center;
+        }
+        
+        .quiz-question {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--dark);
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-option {
+            background: var(--light);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 123, 172, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .quiz-result {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        /* Галерея желаний */
+        .wishes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .wish-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .wish-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .wish-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .wish-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-family: 'Bad Script', cursive;
+        }
+        
+        /* Страницы контента */
+        .content-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 249, 251, 0.98);
+            backdrop-filter: blur(5px);
+            z-index: 900;
+            display: none;
+            overflow-y: auto;
+            padding: 40px 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+        }
+        
+        .content-page.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .page-title {
+            font-family: 'Bad Script', cursive;
+            font-size: 3.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 950;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            transform: scale(1.1);
+            background: #ff5c9b;
+        }
+        
+        /* Страница с цветами */
+        .flowers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .flower-item {
+            height: 280px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s;
+        }
+        
+        .flower-item:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .flower-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .flower-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .flower-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Bad Script', cursive;
+            font-size: 1.8rem;
+        }
+        
+        /* Страница с письмом */
+        .letter-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            border: 1px solid #ffddee;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .letter-content {
+            font-size: 1.3rem;
+            line-height: 1.9;
+            color: var(--text);
+            text-align: justify;
+        }
+        
+        .letter-content p {
+            margin-bottom: 25px;
+        }
+        
+        .letter-signature {
+            text-align: right;
+            margin-top: 40px;
+            font-style: italic;
+            color: #9f82a4;
+            font-family: 'Bad Script', cursive;
+            font-size: 2rem;
+        }
+        
+        /* Страница с фотографиями */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .photo-item {
+            height: 240px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s;
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.15);
+        }
+        
+        /* Страница с музыкой */
+        .music-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .music-player {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .control-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 0 15px;
+            transition: all 0.3s;
+        }
+        
+        .control-button:hover {
+            transform: scale(1.1);
+            background: #ff5c9b;
+        }
+        
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .playlist-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 123, 172, 0.1);
+        }
+        
+        .playlist-item.active {
+            background: rgba(255, 123, 172, 0.2);
+        }
+        
+        .playlist-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+        
+        .song-info {
+            flex: 1;
+        }
+        
+        .song-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .song-artist {
+            color: #9f82a4;
+            font-size: 0.9rem;
+        }
+        
+        .song-duration {
+            color: #9f82a4;
+            margin-left: 15px;
+        }
+        
+        /* Страница с воспоминаниями */
+        .timeline {
+            max-width: 900px;
+            margin: 50px auto;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+        
+        .memory-item {
+            width: 45%;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.4s;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .memory-item:nth-child(even) {
+            margin-left: auto;
+        }
+        
+        .memory-item::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 25px;
+            height: 25px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(255, 123, 172, 0.2);
+        }
+        
+        .memory-item:nth-child(odd)::after {
+            right: -12px;
+            transform: translateX(100%);
+        }
+        
+        .memory-item:nth-child(even)::after {
+            left: -12px;
+            transform: translateX(-100%);
+        }
+        
+        .memory-date {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-family: 'Bad Script', cursive;
+            font-size: 1.5rem;
+        }
+        
+        .memory-text {
+            line-height: 1.7;
+            color: var(--text);
+        }
+        
+        /* Страница с викториной */
+        .quiz-page-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Страница с желаниями */
+        .wishes-page-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* Страница с бенгалами */
+        .bengals-page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Защищенная страница */
+        .password-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 15px 25px;
+            margin: 25px 0;
+            border: 2px solid #eee;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .password-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 123, 172, 0.2);
+        }
+        
+        .password-button {
+            background: linear-gradient(to right, var(--primary), #ff5c9b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 123, 172, 0.3);
+        }
+        
+        .password-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 123, 172, 0.4);
+        }
+        
+        .password-error {
+            color: #ff5c5c;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            margin-top: 80px;
+            color: #9f82a4;
+            font-size: 1rem;
+        }
+        
+        .heart {
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+            display: inline-block;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Эффекты частиц */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            background: rgba(255, 150, 200, 0.3);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
+        
+        /* Декоративные элементы - исправленные сердечки */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            color: rgba(255, 123, 172, 0.3);
+            animation: floating 10s infinite linear;
+        }
+        
+        @keyframes floating {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .splash-title {
+                font-size: 3.5rem;
+            }
+            
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-item {
+                height: 300px;
+            }
+            
+            .flowers-grid, .photo-gallery, .bengals-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .memory-item {
+                width: 85%;
+                margin-left: 15% !important;
+            }
+            
+            .memory-item::after {
+                left: -12px !important;
+                transform: translateX(-100%) !important;
+            }
+            
+            .letter-container {
+                padding: 25px;
+            }
+            
+            .page-title {
+                font-size: 2.8rem;
+            }
+            
+            .player-controls {
+                flex-wrap: wrap;
+            }
+            
+            .control-button {
+                margin: 10px;
+            }
+            
+            .countdown-timer {
+                flex-wrap: wrap;
+            }
+            
+            .countdown-unit {
+                min-width: 80px;
+                margin-bottom: 10px;
+            }
+            
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .wishes-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Начальный экран -->
+    <div class="splash-screen" id="splashScreen">
+        <h1 class="splash-title">Для Алены</h1>
+        <p class="splash-subtitle">Наша собственная экосистема всегда с тобой)</p>
+        <button class="start-button" id="startButton">
+            <i class="fas fa-heart"></i> Открыть
+        </button>
+    </div>
+    
+    <!-- Основной контент -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <h1 class="main-title">Для самой лучшей и единственной Алены</h1>
+                <p class="main-subtitle">Выбери, что хочешь увидеть</p>
+            </header>
+            
+            <div class="nav-grid">
+                <div class="nav-item" id="flowersBtn">
+                    <i class="fas fa-spa nav-icon"></i>
+                    <h3 class="nav-title">Любимые цветы</h3>
+                    <p class="nav-desc">Коллекция самых красивых цветов, которые напоминают мне о тебе</p>
+                </div>
+                
+                <div class="nav-item" id="letterBtn">
+                    <i class="fas fa-envelope-open-text nav-icon"></i>
+                    <h3 class="nav-title">Письмо-инструкция</h3>
+                    <p class="nav-desc">Чтобы ты поняла что тут вообще делать</p>
+                </div>
+                
+                <div class="nav-item" id="photosBtn">
+                    <i class="fas fa-camera nav-icon"></i>
+                    <h3 class="nav-title">Наши фото</h3>
+                    <p class="nav-desc">Моменты, которые я всегда буду хранить в своем сердце</p>
+                </div>
+                
+                <div class="nav-item" id="musicBtn">
+                    <i class="fas fa-music nav-icon"></i>
+                    <h3 class="nav-title">Наша музыка</h3>
+                    <p class="nav-desc">Песни, которые напоминают мне о тебе</p>
+                </div>
+                
+                <div class="nav-item" id="bengalsBtn">
+                    <i class="fas fa-paw nav-icon"></i>
+                    <h3 class="nav-title">Бенгалы</h3>
+                    <p class="nav-desc">Бенгалы, которых ты мне кидала и не только)</p>
+                </div>
+                <!-- <div class="nav-item" id="memoriesBtn">
+                    <i class="fas fa-heart nav-icon"></i>
+                    <h3 class="nav-title">Воспоминания</h3>
+                    <p class="nav-desc">Самые яркие моменты нашего общения</p>
+                </div>
+                <div class="nav-item" id="quizBtn">
+                    <i class="fas fa-question-circle nav-icon"></i>
+                    <h3 class="nav-title">Викторина</h3>
+                    <p class="nav-desc">Проверь, насколько хорошо ты меня знаешь</p>
+                </div> -->
+                <div class="nav-item" id="wishesBtn">
+                    <i class="fas fa-star nav-icon"></i>
+                    <h3 class="nav-title">Наши желания</h3>
+                    <p class="nav-desc">Мечты, которые мы хотим осуществить вместе</p>
+                </div>
+                
+                <div class="nav-item" id="secretBtn">
+                    <i class="fas fa-lock nav-icon"></i>
+                    <h3 class="nav-title">Секретная страница</h3>
+                    <p class="nav-desc">Только для нас двоих</p>
+                </div>
+            </div>
+            
+            <!-- <div class="features-section">
+                <h2 class="section-title">Наша история</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Памятные даты</h3>
+                        <p>Все важные моменты нашего знакомства и отношений</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 class="feature-title">Сюрпризы</h3>
+                        <p>Специальные подарки и сюрпризы, которые я готовлю для тебя</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="feature-title">Мечты</h3>
+                        <p>Наши общие мечты и планы на будущее</p>
+                    </div>
+                </div>
+            </div> -->
+            
+            <!-- Таймер отношений -->
+            <div class="countdown-container">
+                <h2 class="countdown-title">Мы общаемся уже</h2>
+                <div class="countdown-timer">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">365</div>
+                        <div class="countdown-label">дней</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">18</div>
+                        <div class="countdown-label">часов</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">27</div>
+                        <div class="countdown-label">минут</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">43</div>
+                        <div class="countdown-label">секунд</div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <footer>
+            <p>Создано с <span class="heart">❤</span> специально для тебя</p>
+        </footer>
+    </div>
+    
+    <!-- Страница с цветами -->
+    <div class="content-page" id="flowersPage">
+        <button class="back-button" onclick="closePage('flowersPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Любимые цветы</h2>
+                <p>Пока что тут фотки твоих любимых цветов, но здесь будет каждый букет, который я тебе подарю с датой</p>
+            </div>
+            
+            <div class="flowers-grid">
+                <div class="flower-item">
+                    <img src="https://azalianow.ru/blog/wp-content/uploads/2023/12/pionovidnye_rozy_v_bumage_azalianow_dostavka_cvetov_moskva.webp" alt="Розы">
+                    <div class="flower-name">дата</div>
+                </div>
+                
+                <div class="flower-item">
+                    <img src="https://julia-flower.ru/wp-content/uploads/2022/10/image-32.png" alt="Тюльпаны">
+                    <div class="flower-name">дата</div>
+                </div>
+                
+                <div class="flower-item">
+                    <img src="https://cdn-sh1.vigbo.com/shops/29666/products/19255075/images/2-0282150e92dc7d5c0d9715d9093a062c.jpeg" alt="Ромашки">
+                    <div class="flower-name">дата</div>
+                </div>
+                
+                <div class="flower-item">
+                    <img src="https://flowersvalley.ru/images/posts/ee6793818663ef627d9303de9b1212c1.png" alt="Орхидеи">
+                    <div class="flower-name">дата</div>
+                </div>
+                
+                <div class="flower-item">
+                    <img src="https://cdn-sh1.vigbo.com/shops/29666/products/22220775/images/3-0a76824a1576645cb4626caef05833dc.JPG" alt="Пионы">
+                    <div class="flower-name">дата</div>
+                </div>
+                
+                <div class="flower-item">
+                    <img src="https://content2.flowwow-images.com/data/flowers/1000x1000/18/1729628337_18549118.jpg" alt="Лаванда">
+                    <div class="flower-name">дата</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Страница с письмом -->
+    <div class="content-page" id="letterPage">
+        <button class="back-button" onclick="closePage('letterPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Мое письмо-инструкция для тебя</h2>
+                <p>А то ничего непонятно наверное</p>
+            </div>
+            
+            <div class="letter-container">
+                <div class="letter-content">
+                    <p>Моя дорогая звездочка,</p>
+                    <br>
+                    <p>Хочу рассказать тебе что это вообще такое, это наш с тобой сайт, на котором мы будем фиксировать все, что происходит между нами, фото, разные события, мечты, все на свете! Так у нас всегда будет доступ ко всему, мы ничего не забудем и не потеряем, ведь то, что попало в интернет - остается там навсегда. Пока что структура такая, какая есть, зайди и посмотри каждую часть, насладись, так сказать) Я тебя очень сильно люблю и буду дополнять все то, что есть на этом сайте, создавать новыве блоки и тд., у меня очень много идей, которые предстоит реализовать, поэтому прошу пристегнуть ремни!</p>
+                    <br>
+                    <p>С любовью и нежностью,</p>
+                </div>
+                <div class="letter-signature">
+                    <p>Твой Кирилл</p>
+                    <p>❤</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Страница с фотографиями -->
+    <div class="content-page" id="photosPage">
+        <button class="back-button" onclick="closePage('photosPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Наши фотографии</h2>
+                <p>Моменты, которые я всегда буду хранить в памяти, пока что у нас не очень много фото, но их будет все больше и больше!</p>
+            </div>
+            
+            <div class="bengals-grid">
+                    <div class="bengal-card">
+                        <img src="img/head.jpeg" alt="тут ты меня мацаешь" class="bengal-image">
+                        <div class="bengal-caption">тут ты меня мацаешь</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/arms.jpeg" alt="тут мы агро" class="bengal-image">
+                        <div class="bengal-caption">тут мы агро</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/al.jpeg" alt="тут ты красотка моя)" class="bengal-image">
+                        <div class="bengal-caption">тут ты красотка моя)</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/arms_theatre.jpeg" alt="тут мы официальные в театре" class="bengal-image">
+                        <div class="bengal-caption">тут мы официальные в театре</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/plane.jpeg" alt="а вот наша первая встреча!" class="bengal-image">
+                        <div class="bengal-caption">а вот наша первая встреча!</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/together_ps.jpeg" alt="приобнял)" class="bengal-image">
+                        <div class="bengal-caption">приобнял)</div>
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </div>
+    
+    <!-- Страница с музыкой -->
+    <div class="content-page" id="musicPage">
+        <button class="back-button" onclick="closePage('musicPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Наша музыка</h2>
+                <p>Песни, которые ассоциируются с тобой(тоже будут дополняться)</p>
+            </div>
+            
+            <div class="music-container">
+                <div class="music-player">
+                    <div class="player-controls">
+                        <button class="control-button" id="prevButton">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="control-button" id="playButton">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="control-button" id="nextButton">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="playlist" id="playlist">
+                        <div class="playlist-item active" data-src="music/songs/apocalypse.mp3">
+                            <img src="music/covers/apocalypse.jpeg" alt="cover apocalypse">
+                            <div class="song-info">
+                                <div class="song-title">Apocalypse</div>
+                                <div class="song-artist">Cigarettes after sex</div>
+                            </div>
+                            <div class="song-duration">4:50</div>
+                        </div>
+                        
+                        <div class="playlist-item" data-src="music/songs/back.mp3">
+                            <img src="music/covers/back.jpg" alt="cover back">
+                            <div class="song-info">
+                                <div class="song-title">Back to Friends</div>
+                                <div class="song-artist">Sombr</div>
+                            </div>
+                            <div class="song-duration">3:19</div>
+                        </div>
+                        
+                        <div class="playlist-item" data-src="music/songs/birds.mp3">
+                            <img src="music/covers/birds.jpg" alt="cover birds">
+                            <div class="song-info">
+                                <div class="song-title">Birds don't sing</div>
+                                <div class="song-artist">TV Girl</div>
+                            </div>
+                            <div class="song-duration">3:29</div>
+                        </div>
+                        
+                        <div class="playlist-item" data-src="music/songs/feelz.mp3">
+                            <img src="music/covers/feelz.jpg" alt="cover feelz">
+                            <div class="song-info">
+                                <div class="song-title">feelz</div>
+                                <div class="song-artist">Lil Peep</div>
+                            </div>
+                            <div class="song-duration">2:25</div>
+                        </div>
+
+                        <div class="playlist-item" data-src="music/songs/whiplash.mp3">
+                            <img src="music/covers/whiplash.jpg" alt="cover whiplash">
+                            <div class="song-info">
+                                <div class="song-title">whiplash</div>
+                                <div class="song-artist">2hollis</div>
+                            </div>
+                            <div class="song-duration">2:47</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Страница с бенгалами -->
+    <div class="content-page" id="bengalsPage">
+        <button class="back-button" onclick="closePage('bengalsPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Бенгальские котики</h2>
+                <p>Котики, которых ты мне кидала и не только)</p>
+            </div>
+            
+            <div class="bengals-page-content">
+                <div class="bengals-grid">
+                    <div class="bengal-card">
+                        <img src="img/bengal1.jpeg" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">Ты такая же лапуля!</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="img/bengal2.jpeg" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">Тебя утром сфоткали!</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="https://i.pinimg.com/736x/90/d3/fb/90d3fb8103df000e06971702c38da913.jpg" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">Потягуши</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="https://www.proplan.ru/sites/default/files/styles/image_576/public/2021-05/%D0%B1%D0%B5%D0%BD%D0%B3%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BA%D0%BE%D1%88%D0%BA%D0%B0%209.jpg?itok=TV3dauab" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">Алена в зеркало смотрит</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="https://www.proplan.ru/sites/default/files/styles/image_576/public/2021-05/%D0%B1%D0%B5%D0%BD%D0%B3%D0%B0%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BA%D0%BE%D1%88%D0%BA%D0%B0%207.jpg?itok=EllWSy1u" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">НУ мы мы</div>
+                    </div>
+                    <div class="bengal-card">
+                        <img src="https://zoonika.com/wp-content/uploads/2025/02/amatycat-pitomnik-bengalskih-koshek-prodaga-koshek-scaled.jpg" alt="Бенгальский котик" class="bengal-image">
+                        <div class="bengal-caption">Невдупленыщ</div>
+                    </div>
+                </div>
+                
+                <div class="letter-container" style="margin-top: 50px;">
+                    <div class="letter-content">
+                        <p>Аленочка,</p>
+                        <br>
+                        <p>Эти милые бенгальские котики напоминают мне о тебе - такие же прекрасные, грациозные и особенные. Каждый раз, когда я вижу котика, я вспоминаю о тебе - моей чудесной девочке.</p>
+                        <br>
+                        <p>Как эти котики дарят радость всем вокруг, так и ты наполняешь мою жизнь счастьем и светом. Спасибо тебе за это!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Страница с воспоминаниями -->
+    <!-- <div class="content-page" id="memoriesPage">
+        <button class="back-button" onclick="closePage('memoriesPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Наши воспоминания</h2>
+                <p>Самые яркие моменты, которые мы пережили вместе</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="memory-item">
+                    <div class="memory-date">12 мая 2023</div>
+                    <div class="memory-text">Наша первая встреча. Помню, как ты улыбалась, и время будто остановилось.</div>
+                </div>
+                
+                <div class="memory-item">
+                    <div class="memory-date">3 июня 2023</div>
+                    <div class="memory-text">Первая совместная прогулка в парке. Мы говорили обо всем на свете и смеялись до слез.</div>
+                </div>
+                
+                <div class="memory-item">
+                    <div class="memory-date">20 июля 2023</div>
+                    <div class="memory-text">Тот вечер, когда мы смотрели на звезды и делились самыми сокровенными мечтами.</div>
+                </div>
+                
+                <div class="memory-item">
+                    <div class="memory-date">8 августа 2023</div>
+                    <div class="memory-text">Наше первое путешествие вместе. Невероятные пейзажи и моменты, которые навсегда останутся в памяти.</div>
+                </div>
+                
+                <div class="memory-item">
+                    <div class="memory-date">15 сентября 2023</div>
+                    <div class="memory-text">День, когда я понял, что ты - самый special человек в моей жизни.</div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    
+    <!-- Страница с викториной -->
+    <!-- <div class="content-page" id="quizPage">
+        <button class="back-button" onclick="closePage('quizPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Викторина о нас</h2>
+                <p>Проверь, насколько хорошо ты меня знаешь</p>
+            </div>
+            
+            <div class="quiz-page-content">
+                <div class="quiz-container">
+                    <div class="quiz-question" id="fullQuizQuestion">Где мы впервые встретились?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="true">В парке</div>
+                        <div class="quiz-option">В кафе</div>
+                        <div class="quiz-option">На работе</div>
+                        <div class="quiz-option">В университете</div>
+                    </div>
+                    <div class="quiz-result" id="fullQuizResult"></div>
+                </div>
+                
+                <div class="features-section">
+                    <h2 class="section-title">Другие вопросы</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h3 class="feature-title">Любимое место</h3>
+                            <p>Какое мое любимое место для отдыха?</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <h3 class="feature-title">Любимая песня</h3>
+                            <p>Какая моя любимая песня?</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3 class="feature-title">Любимое блюдо</h3>
+                            <p>Какое мое любимое блюдо?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    
+    <!-- Страница с желаниями -->
+    <div class="content-page" id="wishesPage">
+        <button class="back-button" onclick="closePage('wishesPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="page-header">
+                <h2 class="page-title">Наши желания</h2>
+                <p>Мечты, которые мы хотим осуществить вместе</p>
+            </div>
+            
+            <div class="wishes-page-content">
+                <div class="wishes-container">
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-plane"></i></div>
+                        <h3 class="wish-title">Путешествие в Италию</h3>
+                        <p>Провести отлично время, посмотреть природу, погулять и конечно покушать!</p>
+                    </div>
+                    
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-home"></i></div>
+                        <h3 class="wish-title">Свой домик у моря</h3>
+                        <p>Домик как ты хочешь)</p>
+                    </div>
+                    
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-heart"></i></div>
+                        <h3 class="wish-title">Вечная любовь</h3>
+                        <p>Сохранить наши чувства на всю жизнь</p>
+                    </div>
+                    
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h3 class="wish-title">Образование</h3>
+                        <p>Помочь тебе достичь всех учебных целей(и мне)</p>
+                    </div>
+                    
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-tree"></i></div>
+                        <h3 class="wish-title">Путешествия</h3>
+                        <p>Посетить страны с чудесной природой</p>
+                    </div>
+                    
+                    <div class="wish-item">
+                        <div class="wish-icon"><i class="fas fa-dog"></i></div>
+                        <h3 class="wish-title">Завести питомца</h3>
+                        <p>Милого лабрадора или котенка бенгала для нашей семьи(может сразу обоих)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Защищенная страница -->
+    <div class="content-page" id="secretPage">
+        <button class="back-button" onclick="closePage('secretPage')">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="container">
+            <div class="password-container" id="passwordForm">
+                <h2 class="page-title">Секретная страница</h2>
+                <p>Введи пароль, чтобы открыть особые послания</p>
+                
+                <input type="password" class="password-input" id="passwordInput" placeholder="Введите пароль">
+                <button class="password-button" onclick="checkPassword()">Открыть</button>
+                
+                <p class="password-error" id="passwordError">Видимо Вы не Аленочка, она бы сразу поняла что вводить)</p>
+            </div>
+            
+            <div class="letter-container" id="secretContent" style="display: none;">
+                <div class="letter-content">
+                    <p>Моя любимая Алена,</p>
+                    <br>
+                    <p>Это наше особое место, куда только мы вдвоем имеем доступ. Здесь я храню самые сокровенные слова, которые предназначены только для тебя.</p>
+                    <br>
+                    <p>Ты - самое лучшее, что случилось со мной за всю жизнь. Каждый день, просыпаясь, я думаю о тебе и с нетерпением жду момента, когда мы снова увидимся.</p>
+                    <br>
+                    <p>Я хочу, чтобы ты знала - ты можешь всегда рассчитывать на меня. В радости и в печали, в солнечные и пасмурные дни - я всегда буду рядом.</p>
+                    <br>
+                    <p>Спасибо за то, что ты есть. Ты делаешь этот мир ярче и прекраснее просто своим присутствием.</p>
+                    <br>
+                    <p>P.S. кстати тут будет не просто одно послание, а целый дневник из моих мыслей для тебя</p>
+                    <br>
+                    <p>Люблю тебя больше, чем слова могут выразить,</p>
+                </div>
+                <div class="letter-signature">
+                    <p>Твой Кирилл</p>
+                    <p>❤</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Эффект частиц -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Плавающие сердечки -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <!-- Аудио элемент -->
+    <audio id="audioPlayer"></audio>
+    
+    <script>
+        // Инициализация частиц
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const colors = ['rgba(255, 182, 193, 0.3)', 'rgba(255, 209, 220, 0.3)', 
+                           'rgba(230, 210, 250, 0.3)', 'rgba(200, 170, 255, 0.3)'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Случайные свойства
+                const size = Math.random() * 20 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.background = color;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particles.appendChild(particle);
+            }
+        }
+        
+        // Создание плавающих сердечек
+        function createHearts() {
+            const heartsContainer = document.getElementById('floatingHearts');
+            const heartSymbols = ['❤', '💖', '💕', '💗', '💓', '💘'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                heart.style.animationDelay = `${Math.random() * 10}s`;
+                heart.style.fontSize = `${Math.random() * 1.5 + 1.5}rem`;
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Таймер отношений
+        function updateCountdown() {
+            // Установите дату начала отношений
+            const startDate = new Date('2025-03-01');
+            const now = new Date();
+            
+            const diff = now - startDate;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+        
+        // Викторина
+        // function setupQuiz() {
+        //     const quizOptions = document.querySelectorAll('.quiz-option');
+            
+        //     quizOptions.forEach(option => {
+        //         option.addEventListener('click', function() {
+        //             const isCorrect = this.getAttribute('data-correct') === 'true';
+        //             const resultElement = this.closest('.quiz-container').querySelector('.quiz-result');
+                    
+        //             if (isCorrect) {
+        //                 resultElement.textContent = 'Правильно! Ты действительно меня знаешь! ❤';
+        //                 resultElement.style.color = '#4caf50';
+        //             } else {
+        //                 resultElement.textContent = 'Попробуй еще раз!';
+        //                 resultElement.style.color = '#ff5c5c';
+        //             }
+                    
+        //             resultElement.style.display = 'block';
+                    
+        //             // Скрыть результат через 3 секунды
+        //             setTimeout(() => {
+        //                 resultElement.style.display = 'none';
+        //             }, 3000);
+        //         });
+        //     });
+        // }
+        
+        // Показ основного контента
+        document.getElementById('startButton').addEventListener('click', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            splashScreen.classList.add('hidden');
+            
+            setTimeout(function() {
+                mainContent.classList.add('visible');
+                // Запускаем таймер
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+                // Настраиваем викторину
+                setupQuiz();
+            }, 800);
+        });
+        
+        // Открытие страниц
+        document.getElementById('flowersBtn').addEventListener('click', function() {
+            openPage('flowersPage');
+        });
+        
+        document.getElementById('letterBtn').addEventListener('click', function() {
+            openPage('letterPage');
+        });
+        
+        document.getElementById('photosBtn').addEventListener('click', function() {
+            openPage('photosPage');
+        });
+        
+        document.getElementById('musicBtn').addEventListener('click', function() {
+            openPage('musicPage');
+        });
+        
+        document.getElementById('bengalsBtn').addEventListener('click', function() {
+            openPage('bengalsPage');
+        });
+        
+        // document.getElementById('memoriesBtn').addEventListener('click', function() {
+        //     openPage('memoriesPage');
+        // });
+        
+        // document.getElementById('quizBtn').addEventListener('click', function() {
+        //     openPage('quizPage');
+        //     // Настраиваем викторину на отдельной странице
+        //     setTimeout(setupQuiz, 100);
+        // });
+        
+        document.getElementById('wishesBtn').addEventListener('click', function() {
+            openPage('wishesPage');
+        });
+        
+        document.getElementById('secretBtn').addEventListener('click', function() {
+            openPage('secretPage');
+        });
+        
+        function openPage(pageId) {
+            document.getElementById(pageId).style.display = 'block';
+            setTimeout(function() {
+                document.getElementById(pageId).classList.add('active');
+            }, 10);
+        }
+        
+        function closePage(pageId) {
+            document.getElementById(pageId).classList.remove('active');
+            setTimeout(function() {
+                document.getElementById(pageId).style.display = 'none';
+            }, 500);
+        }
+        
+        // Проверка пароля
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const errorElement = document.getElementById('passwordError');
+            const passwordForm = document.getElementById('passwordForm');
+            const secretContent = document.getElementById('secretContent');
+            
+            if (password === '111') {
+                passwordForm.style.display = 'none';
+                secretContent.style.display = 'block';
+            } else {
+                errorElement.style.display = 'block';
+                setTimeout(function() {
+                    errorElement.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Музыкальный плеер
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playButton = document.getElementById('playButton');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        
+        // Загрузка песни
+        function loadSong(index) {
+            const songSrc = playlistItems[index].getAttribute('data-src');
+            audioPlayer.src = songSrc;
+            
+            // Обновление активного элемента плейлиста
+            playlistItems.forEach(item => item.classList.remove('active'));
+            playlistItems[index].classList.add('active');
+            
+            // Если уже играло, продолжаем воспроизведение
+            if (isPlaying) {
+                audioPlayer.play();
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+        
+        // Воспроизведение/пауза
+        playButton.addEventListener('click', function() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            } else {
+                audioPlayer.pause();
+                playButton.innerHTML = '<i class="fas fa-play"></i>';
+                isPlaying = false;
+            }
+        });
+        
+        // Следующий трек
+        nextButton.addEventListener('click', function() {
+            currentSongIndex = (currentSongIndex + 1) % playlistItems.length;
+            loadSong(currentSongIndex);
+        });
+        
+        // Предыдущий трек
+        prevButton.addEventListener('click', function() {
+            currentSongIndex = (currentSongIndex - 1 + playlistItems.length) % playlistItems.length;
+            loadSong(currentSongIndex);
+        });
+        
+        // Клик по элементу плейлиста
+        playlistItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                currentSongIndex = index;
+                loadSong(currentSongIndex);
+                audioPlayer.play();
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            });
+        });
+        
+        // Автопереход к следующему треку
+        audioPlayer.addEventListener('ended', function() {
+            nextButton.click();
+        });
+        
+        // Инициализация при загрузке
+        window.addEventListener('load', function() {
+            createParticles();
+            createHearts();
+            // Загружаем первую песню
+            loadSong(0);
+        });
+    </script>
+</body>
+</html>
